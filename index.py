@@ -1,15 +1,22 @@
-import requests
+import subprocess
 
-# Define the form data
+# Define the form data as a dictionary
 form_data = {
-    'Name': 'Dyari Ameen'
+    'Name': 'John Doe'
 }
 
-# Make the POST request with the form data
-response = requests.post('https://ee.humanitarianresponse.info/x/vG9yQk80', data=form_data)
+# Convert the form data dictionary into a string of key-value pairs
+form_data_str = '&'.join([f"{key}={value}" for key, value in form_data.items()])
 
-# Check the response
-if response.status_code == 200:
-    print('Form submitted successfully!')
+# Prepare the curl command
+curl_command = f"curl -X POST -d '{form_data_str}' https://ee.humanitarianresponse.info/x/vG9yQk80"
+
+# Execute the curl command using subprocess
+result = subprocess.run(curl_command, shell=True, capture_output=True, text=True)
+
+# Check the result
+if result.returncode == 0:
+    print("Form submitted successfully!")
 else:
-    print('Form submission failed.')
+    print("An error occurred while submitting the form.")
+    print(result.stderr)
